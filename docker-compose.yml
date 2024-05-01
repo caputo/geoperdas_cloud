@@ -1,0 +1,64 @@
+version: '3'
+
+services:   
+
+  webapi:
+    build:
+      context: .
+      dockerfile: Dockerfile.webapi
+    expose: 
+      - "80"    
+    ports:
+      - "5002:80"
+    networks:
+      - my-network
+
+  rabbitmqserver:
+    image: rabbitmq:3.8.19-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    expose:
+      - "15672"  
+      - "5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=geoperdas
+      - RABBITMQ_DEFAULT_PASS=geoperdas
+    networks:
+      - my-network
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  geoperdasconsole:
+    build:
+      context: .
+      dockerfile: Dockerfile.console        
+    depends_on:
+      rabbitmqserver:
+        condition: service_healthy
+    environment:
+      - APPSETTINGS_RABBITMQSERVER=rabbitmqserver
+      - APPSETTINGS_RABBITMQUSER=geoperdas
+      - APPSETTINGS_RABBITMQPASSWORD=geoperdas
+    networks:
+      - my-network
+    deploy:
+      replicas: 2
+
+  sqlserver:
+    build:
+      context: .
+      dockerfile: ./database_container/Dockerfile
+    ports:
+      - 1433:1433
+    volumes:
+      - ./data:/var/opt/mssql/data
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

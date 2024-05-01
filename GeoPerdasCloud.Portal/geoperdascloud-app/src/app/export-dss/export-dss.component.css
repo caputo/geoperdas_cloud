@@ -1,0 +1,48 @@
+@keyframes spinner {
+    to {transform: rotate(360deg);}
+  }
+  
+  .spinner:before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    margin-left: -10px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    border-top-color: #7d0303;
+    animation: spinner .8s linear infinite;
+  }
+
+  .container {        
+    margin: 70px;    
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 10px;    
+    text-align: center;    
+    background-color: rgba(255,255,255,0.2);
+    color: white;
+  }  
+
+  .container > .form-field {
+    min-width: 150px;
+    max-width: 500px;    
+    width: 100%;
+    margin: 10px;    
+    display: inline-flex;
+  }  
+
+  #messageArea{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    background-color: darksalmon;
+    z-index: 999;
+    text-align: center;
+  }

@@ -1,0 +1,37 @@
+# # Stage 1: Build the Angular application
+# FROM node:16 as build
+# WORKDIR /app
+
+# # Copy package.json and package-lock.json
+# COPY /GeoPerdasCloud.Portal/geoperdascloud-app/package*.json ./
+
+# # Install dependencies
+# RUN npm install
+
+# # Copy the entire Angular app
+# COPY /GeoPerdasCloud.Portal/geoperdascloud-app .
+
+# # Build the Angular app
+# RUN npm run build
+
+# Stage 2: Serve the Angular app using NGINX
+FROM nginx:latest
+
+WORKDIR /app
+
+# Remove the default NGINX configuration file
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy the Angular app built in the previous stage
+#COPY --from=build /app/dist/geoperdascloud-app/dist /usr/share/nginx/html
+
+# Copy custom NGINX configuration if needed
+COPY angularnginx.conf /etc/nginx/nginx.conf
+
+COPY /GeoPerdasCloud.Portal/geoperdascloud-app/dist/geoperdascloud-app /usr/share/nginx/html
+
+# Expose port 80
+EXPOSE 80
+
+# Start NGINX server
+CMD ["nginx", "-g", "daemon off;"]

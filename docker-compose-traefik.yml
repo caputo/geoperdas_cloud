@@ -1,0 +1,83 @@
+version: '3'
+
+services:
+  traefik:
+    image: "traefik:v2.9"
+    container_name: "traefik"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    networks:
+      - my-network
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    labels:
+      - traefik.enable=true
+      - traefik.network=my-network
+      - traefik.port=8080
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.rule=Host(`geoperdascloud.localhost`)           
+
+  webapi:
+    build:
+      context: .
+      dockerfile: Dockerfile.webapi
+    ports:
+      - 5001:443
+      - 5002:80
+    networks:
+      - my-network
+    depends_on:
+      - angularapp
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.webapi.rule=(Host(`geoperdascloud.localhost`) && PathPrefix(`/webapi`))      
+      - traefik.docker.network=my-network
+
+  angularapp:
+    build:
+      context: .
+      dockerfile: Dockerfile.angular2
+    ports:
+      - 5000:8080
+    networks:
+      - my-network
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.angularapp.rule=Host(`geoperdascloud.localhost`) && PathPrefix(`/angularapp`)      
+      - traefik.http.services.angularapp.loadbalancer.server.port=5000
+
+  rabbitmqserver:
+    image: rabbitmq:3.8.19-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=geoperdas
+      - RABBITMQ_DEFAULT_PASS=geoperdas
+    networks:
+      - my-network
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  geoperdasconsole:
+    build:
+      context: .
+      dockerfile: Dockerfile.console        
+    depends_on:
+      rabbitmqserver:
+        condition: service_healthy
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

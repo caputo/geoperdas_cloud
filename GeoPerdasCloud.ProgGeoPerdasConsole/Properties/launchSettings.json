@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "GeoPerdasCloud.ProgGeoPerdasConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "RAPA1301 391"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

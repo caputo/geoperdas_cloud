@@ -1,0 +1,88 @@
+<div *ngIf="errorMessage != ''"   id="messageArea">
+    <span>{{errorMessage}}</span>
+</div>
+<div class="form-container container">
+    <h1 style="font-family: fantasy; font-style: italic;">ProgGeoPerdas Online</h1>
+    <mat-form-field class="form-field">
+        <mat-label>Servidor</mat-label>
+        <input matInput placeholder="Servidor" [(ngModel)]="config.tbServer">
+    </mat-form-field>
+    <mat-form-field class="form-field">
+        <mat-label>Database</mat-label>
+        <input matInput placeholder="Database" [(ngModel)]="config.tbDatabase">
+    </mat-form-field>
+    <mat-form-field class="form-field">
+        <mat-label>Usuario</mat-label>
+        <input matInput placeholder="Usuario" [(ngModel)]="config.tbUser">
+    </mat-form-field>
+    <mat-form-field class="form-field">
+        <mat-label>Senha</mat-label>
+        <input matInput placeholder="Usuario" [(ngModel)]="config.tbPassword">
+    </mat-form-field>
+    <mat-form-field class="form-field">
+        <mat-label>Base</mat-label>
+        <input matInput placeholder="Base" [(ngModel)]="config.tbObjectBase">
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+        <mat-label>Alimentadores (Separar alimentadores por ; )</mat-label>
+        <input matInput placeholder="Alimentadores" [(ngModel)]="config.tbObjectFeeder">
+    </mat-form-field>
+
+
+    <div class="form-field">
+        <mat-checkbox color="white" [(ngModel)]="config.cbReinicializeNT">Reinicializar carga não
+            técnica</mat-checkbox>
+    </div>
+    <div class="form-field">
+        <mat-checkbox color="white" [(ngModel)]="config.cbMeterComplete">Medição completa</mat-checkbox>
+    </div>
+
+
+    <mat-form-field class="form-field">
+        <mat-label>Tensáo Minimma (pu)</mat-label>
+        <input matInput placeholder="0.6" [(ngModel)]="config.tbVPUMin">
+    </mat-form-field>
+
+
+    <mat-form-field class="form-field">
+        <mat-label>Modelos de carga (1,2)</mat-label>
+        <mat-select [(ngModel)]="config.cbModel">
+            <mat-option value="1">1</mat-option>
+            <mat-option value="2">2</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+
+    <mat-selection-list class="form-field" style="display:block;text-align: center; margin:auto; color:white;">
+        <mat-list-option color="primary" [(ngModel)]="config.convergiaPNT">Convergência de Perda Não
+            Técnica</mat-list-option>
+        <mat-list-option color="primary" [(ngModel)]="config.transformadoresABNT">Transformadores ABNT</mat-list-option>
+        <mat-list-option color="primary" [(ngModel)]="config.adequaMT">Adequação Tensão Mínima das Cargas MT (0,93
+            pu)</mat-list-option>
+        <mat-list-option color="primary" [(ngModel)]="config.adequaBT">Adequação Tensão Mínima das Cargas BT (0,92
+            pu)</mat-list-option>
+        <mat-list-option color="primary" [(ngModel)]="config.limiteTensaoBarra">Limitar Máxima Tensão de Barras e
+            Reguladores (1,05 pu)</mat-list-option>
+        <mat-list-option color="primary" [(ngModel)]="config.limiteRamal">Limitar o Ramal (30m)</mat-list-option>
+        <mat-list-option color="primary" [(ngModel)]="config.tapTransformadores">Utilizar Tap nos
+            Transformadores</mat-list-option>
+        <mat-list-option color="primary" [(ngModel)]="config.limiteCargaBT">Limitar Cargas BT (Potência ativa do
+            transformador)</mat-list-option>
+        <mat-list-option color="primary" [(ngModel)]="config.neutralizaTrafo">Neutralizar Transformadores de
+            Terceiros</mat-list-option>
+        <mat-list-option color="primary" [(ngModel)]="config.netralizaRede">Neutralizar Redes de Terceiros
+            (MT/BT)</mat-list-option>
+        <mat-list-option color="primary" [(ngModel)]="config.trafoVazio">Eliminar Transformadores
+            Vazios</mat-list-option>
+    </mat-selection-list>
+
+
+    <div>
+        <button mat-raised-button color="primary" style="margin:10px;" (click)="export()" [class.spinner]="loading"
+            [disabled]="loading">Exportar DSS</button>
+        <button mat-raised-button color="primary" style="margin:10px;" (click)="requestCalc()"
+            [class.spinner]="loading" [disabled]="loading">Calculo MT-BT</button>
+    </div>
+
+</div>
